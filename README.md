@@ -1,12 +1,34 @@
-# PetStore Application
+# PetStore Application - Middleware - UCSC
 
-## Introduction
+### Balachandran Priyatharshan
 
-MicroProfile Starter has generated this MicroProfile application for you.
+### 18001262
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+### 2018/CS/126
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## Requirements
+
+- Java Version 11.0 or above
+- Docker Desktop
+- Docker Compose
+- GraalVM (https://www.graalvm.org/docs/getting-started/)
+- Gradle
+- GIT
+
+## Import Application to System
+
+    git clone https://github.com/tharshan24/Middleware-PetStore-UCSC.git
+
+## Database config
+
+In application properties
+
+    quarkus.datasource.db-kind=h2
+    quarkus.datasource.username=username-default
+    quarkus.datasource.jdbc.url=jdbc:h2:mem:petStore
+    quarkus.datasource.jdbc.max-size=13
+
+By default H2 memory data base is configured. Change the database as per needs (https://quarkus.io/guides/datasource)
 
 ## Packaging and running the application
 
@@ -35,11 +57,19 @@ You can run your application in dev mode that enables live coding using:
 
     ./gradlew quarkusDev
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_NOTE:_** Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
 
 ## Creating a native executable
 
-Mind having GRAALVM_HOME set to your Mandrel or GraalVM installation.
+Mind having GRAALVM_HOME set to your Mandrel or GraalVM installation. If you didn't follow this
+
+Point the PATH environment variable to the GraalVM bin directory:
+
+    export PATH=/Library/Java/JavaVirtualMachines/<graalvm>/Contents/Home/bin:$PATH
+
+Set the JAVA_HOME environment variable to resolve to the GraalVM installation directory:
+
+    export JAVA_HOME=/Library/Java/JavaVirtualMachines/<graalvm>/Contents/Home
 
 You can create a native executable using:
 
@@ -59,63 +89,113 @@ You can then execute your native executable with:
 
     ./build/petstore-runner
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+## Testing
 
-## Specification examples
+The system will run in http://localhost:8080/v1/
 
-By default, there is always the creation of a JAX-RS application class to define the path on which the JAX-RS endpoints are available.
+To test the cystem with data use Postman (https://www.postman.com/downloads/)
 
-Also, a simple Hello world endpoint is created, have a look at the class **HelloController**.
+Select a Pet (GET)
 
-More information on MicroProfile can be found [here](https://microprofile.io/)
+    http://localhost:8080/v1/pets/<id of the pet>
 
-### Config
+Select all pets (GET)
 
-Configuration of your application parameters. Specification [here](https://microprofile.io/project/eclipse/microprofile-config)
+    http://localhost:8080/v1/pets/
 
-The example class **ConfigTestController** shows you how to inject a configuration parameter and how you can retrieve it programmatically.
+Insert a pet (POST)
 
-### Fault tolerance
+    http://localhost:8080/v1/pets/
 
-Add resilient features to your applications like TimeOut, RetryPolicy, Fallback, bulkhead and circuit breaker. Specification [here](https://microprofile.io/project/eclipse/microprofile-fault-tolerance)
+    //raw input
+    {
+        "petAge":<age of the pet>,
+        "petName":"<Name of the pet>",
+        "petTypeId:{
+            "petTypeId":<pet type id>,
+            "petTypeName":"<name of the pet type>"
+        }
+    }
 
-The example class **ResilienceController** has an example of a FallBack mechanism where an fallback result is returned when the execution takes too long.
+Update a pet (PUT)
 
-### Health
+    http://localhost:8080/v1/pets/
 
-The health status can be used to determine if the 'computing node' needs to be discarded/restarted or not. Specification [here](https://microprofile.io/project/eclipse/microprofile-health)
+    //raw input
+    {
+        "petId":<id of the pet>,
+        "petAge":<age of the pet>,
+        "petName":"<Name of the pet>",
+        "petTypeId:{
+            "petTypeId":<pet type id>,
+            "petTypeName":"<name of the pet type>"
+        }
+    }
 
-The class **ServiceHealthCheck** contains an example of a custom check which can be integrated to health status checks of the instance.  The index page contains a link to the status data.
+Delete a pet (DELETE)
 
-### Metrics
+    http://localhost:8080/v1/pets/<id of the pet>
 
-The Metrics exports _Telemetric_ data in a uniform way of system and custom resources. Specification [here](https://microprofile.io/project/eclipse/microprofile-metrics)
+Search a pet by age
 
-The example class **MetricController** contains an example how you can measure the execution time of a request.  The index page also contains a link to the metric page (with all metric info)
+    http://localhost:8080/v1/pets/age/<id of the pet>
 
-### JWT Auth
+Search a pet by name
 
-Using the OpenId Connect JWT token to pass authentication and authorization information to the JAX-RS endpoint. Specification [here](https://microprofile.io/project/eclipse/microprofile-rest-client)
+    http://localhost:8080/v1/pets/name/<id of the pet>
 
-Have a look at the **TestSecureController** class which calls the protected endpoint on the secondary application.
-The **ProtectedController** (secondary application) contains the protected endpoint since it contains the _@RolesAllowed_ annotation on the JAX-RS endpoint method.
+---
 
-The _TestSecureController_ code creates a JWT based on the private key found within the resource directory.
-However, any method to send a REST request with an appropriate header will work of course. Please feel free to change this code to your needs.
+Select a Pet Type (GET)
 
-### Open API
+    http://localhost:8080/v1/types/<id of the pet type>
 
-Exposes the information about your endpoints in the format of the OpenAPI v3 specification. Specification [here](https://microprofile.io/project/eclipse/microprofile-open-api)
+Select all pet types (GET)
 
-The index page contains a link to the OpenAPI information of your endpoints.
+    http://localhost:8080/v1/types/
 
-### Open Tracing
+Insert a pet type (POST)
 
-Allow the participation in distributed tracing of your requests through various micro services. Specification [here](https://microprofile.io/project/eclipse/microprofile-opentracing)
+    http://localhost:8080/v1/types/
 
-To show this capability download [Jaeger](https://www.jaegertracing.io/download/#binaries) and run ```./jaeger-all-in-one```.
-Open [http://localhost:16686/](http://localhost:16686/) to see the traces. Mind that you have to access your demo app endpoint for any traces to show on Jaeger UI.
+    //raw input
+    {
+        "petTypeName":"<name of the pet type>",
+    }
 
-## Deploying Application
+Update a pet type (PUT)
 
-To deploy the demo app on a docker-compose please visit [./deploy](https://github.com/rasika/petstore/tree/master/deploy)
+    http://localhost:8080/v1/types/
+
+    //raw input
+    {
+        "petTypeId":<pet type id>,
+        "petTypeName":"<name of the pet type>",
+    }
+
+Delete a pet type (DELETE)
+
+    http://localhost:8080/v1/types/<id of the pet type>
+
+---
+
+Other Tests (In browser)
+
+    http://localhost:8080/config/injected
+    http://localhost:8080/config/lookup
+
+    //Health Test
+    http://localhost:8080/health/live
+
+    http://localhost:8080/metric/timed
+    http://localhost:8080/metrics
+
+## Deployment
+
+- Run
+
+        docker-compose up -d
+
+- Open http://localhost:3000/ and use admin:admin credentials
+- Navigate into http://localhost:3000/dashboards
+- Open Quarkus Microprofile Metrics dashboard

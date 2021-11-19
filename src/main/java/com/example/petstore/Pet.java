@@ -1,41 +1,35 @@
 package com.example.petstore;
 
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.constraints.NotBlank;
 
-@Schema(name = "Pet")
+// defining entity and table
+@Entity
+@Table
 public class Pet {
 
-	@Schema(required = true, description = "Pet id")
-	@JsonProperty("pet_id")
-	private Integer petId;
+	@Id // primary key
+	@Column
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int petId;
 
-	@Schema(required = true, description = "Pet type")
-	@JsonProperty("pet_type")
-	private String petType;
-
-	@Schema(required = true, description = "Pet name")
-	@JsonProperty("pet_name")
+	@Column(unique = true) // unique column
 	private String petName;
 
-	@JsonProperty("pet_age")
-	private Integer petAge;
+	@Column
+	private int petAge;
 
-	public Integer getPetId() {
+	@JoinColumn(name = "petTypeId", referencedColumnName = "petTypeId")
+	@ManyToOne(optional = false)
+	private PetType petTypeId;
+
+	public int getPetId() {
 		return petId;
 	}
 
-	public void setPetId(Integer petId) {
-		this.petId = petId;
-	}
-
-	public String getPetType() {
-		return petType;
-	}
-
-	public void setPetType(String petType) {
-		this.petType = petType;
+	public void setPetId(int id) {
+		this.petId = id;
 	}
 
 	public String getPetName() {
@@ -46,12 +40,20 @@ public class Pet {
 		this.petName = petName;
 	}
 
-	public Integer getPetAge() {
+	public int getPetAge() {
 		return petAge;
 	}
 
-	public void setPetAge(Integer petAge) {
+	public void setPetAge(int petAge) {
 		this.petAge = petAge;
+	}
+
+	public PetType getPetTypeId() {
+		return petTypeId;
+	}
+
+	public void setPetTypeId(PetType petTypeId) {
+		this.petTypeId = petTypeId;
 	}
 
 }
